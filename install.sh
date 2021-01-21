@@ -5,3 +5,6 @@ source ./venv/bin/activate
 
 python3.6 -m pip install --upgrade pip
 python3.6 -m pip install -r requirements.txt
+
+cd projects
+python3.6 -m scrapy crawl ruliweb

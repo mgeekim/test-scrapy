@@ -1,5 +1,6 @@
 import scrapy
-
+import better_exceptions
+better_exceptions.hook()
 
 class RuliwebSpider(scrapy.Spider):
     name = 'ruliweb'

@@ -3,6 +3,8 @@ import scrapy
 import better_exceptions
 better_exceptions.hook()
 
+from projects.items import ProjectsItem
+
 class RuliwebSpider(scrapy.Spider):
     name = 'ruliweb'
     allowed_domains = ['bbs.ruliweb.com/best/best/now?orderby=best_id']
@@ -23,9 +25,9 @@ class RuliwebSpider(scrapy.Spider):
                 user   = each.css(css_user).extract_first().strip()
                 title  = each.css(css_title).extract_first().strip()
                 recomd = each.css(css_recomd).extract_first().strip()
-                item = {
-                    'user'   : user,
-                    'title'  : title,
-                    'recomd' : recomd,
-                }
-                print(item)
+
+                item = ProjectsItem()
+                item['user'] = user
+                item['title'] = title
+                item['recomd'] = recomd
+                yield item

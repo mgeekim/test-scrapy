@@ -1,5 +1,6 @@
 import re
 import scrapy
+import time
 import better_exceptions
 better_exceptions.hook()
 
@@ -7,8 +8,15 @@ from projects.items import ProjectsItem
 
 class RuliwebSpider(scrapy.Spider):
     name = 'ruliweb'
-    allowed_domains = ['bbs.ruliweb.com/best/best/now?orderby=best_id']
+    allowed_domains = ['bbs.ruliweb.com']
     start_urls = ['http://bbs.ruliweb.com/best/best/now?orderby=best_id/']
+
+    def __init__(self, *args, **kwargs):
+        super(RuliwebSpider, self).__init__(*args, **kwargs)
+        self.next_id    = 1
+        self.next_url   = "https://bbs.ruliweb.com/best/best/now?orderby=best_id&range=24h&page={}"
+        self.last_id    = 5
+        self.sleep_time = 2
 
     def parse(self, response):
         rule_post  = r'https://bbs\.ruliweb\.com/best/board/300143/read/.*'
@@ -31,3 +39,8 @@ class RuliwebSpider(scrapy.Spider):
                 item['title'] = title
                 item['recomd'] = recomd
                 yield item
+
+        self.next_id += 1
+        if not self.next_id > self.last_id:
+            time.sleep(self.sleep_time)
+            yield scrapy.Request(url=self.next_url.format(self.next_id), callback=self.parse)
